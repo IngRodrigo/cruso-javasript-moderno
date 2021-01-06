@@ -1,8 +1,12 @@
 /**Agregar funciones a los objetos */
 const reproductor={
-    play:(id)=>{
+    play:function(id){
         console.log(`Reproduciendo la cancion ${id}`)
+    },
+    pause:(id)=>{
+        console.log(`Pausando la cancion ${id}`);
     }
 }
 
-console.log(reproductor.play(1));
+reproductor.play(1);
+reproductor.pause(2);
