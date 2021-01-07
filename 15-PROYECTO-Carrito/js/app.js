@@ -18,8 +18,32 @@ function establecerListener(){
 
 //funciones
 function agregarCurso(e){
-    console.log(e.target);
+    e.preventDefault();//prevenimos la accion por defecto del enlace
+    //target.classList muestra las clases css que tiene el div selccionado y contains() verifica si una de ellas es agregar-carrito
+    if(e.target.classList.contains('agregar-carrito')){//si lo es entonces cumple la condicion para agregar al carrito
+        //rod_dev:parentElement sirve para ir atras al elemento html padre, esto lo hacemos debido a que el card tiene la informacion del articulo completo
+        //desde la imagen, titulo hasta el precio
+        const cursoSeleccionado=e.target.parentElement.parentElement;
+        //le pasamos el contenido html del producto para crear el objeto utilizable con los datos
+        leerDatosDelCuros(cursoSeleccionado);
+    }
 }
 function vaciarCarrito(){
     console.log(`Vaciando`);
+}
+
+
+
+//leer datos del curso y convertilo a un objeto utilizable por js
+function leerDatosDelCuros(curso){
+console.log(curso);
+    const infoCurso={
+        imagen:curso.querySelector('img').src,
+        titulo:curso.querySelector('h4').textContent,
+        precio:curso.querySelector('span').textContent,
+        id:curso.querySelector('a').getAttribute('data-id'),
+        cantidad:1
+    }
+
+    console.log(infoCurso)
 }
