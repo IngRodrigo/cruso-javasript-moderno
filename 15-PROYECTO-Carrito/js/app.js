@@ -51,7 +51,8 @@ function eliminarCurso(e){
 
 
 function vaciarCarrito(){
-    console.log(`Vaciando`);
+    articuloCarrito=[];
+    limpiarHTML();
 }
 
 
