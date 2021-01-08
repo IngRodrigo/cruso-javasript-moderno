@@ -7,11 +7,16 @@ const btnVaciarCarrito=document.getElementById('vaciar-carrito');
 const listaCursos=document.getElementById('lista-cursos');
 //variable para guardar los cursos
 let articuloCarrito=[];//igualamos a un array vacio
+
 //establecer listenner
 establecerListener();
+
+
 function establecerListener(){
     //agregar cursos al carrito
     listaCursos.addEventListener('click', agregarCurso);
+    //eliminar curso del carrito
+    carrito.addEventListener('click', eliminarCurso);
     //vaciar carrito
     btnVaciarCarrito.addEventListener('click', vaciarCarrito);
 }
@@ -30,6 +35,21 @@ function agregarCurso(e){
         leerDatosDelCuros(cursoSeleccionado);
     }
 }
+//Eliminar curso del carrito
+function eliminarCurso(e){
+    e.preventDefault();
+    // console.log(e.target.classList);
+    if(e.target.classList.contains('borrar-curso')){
+        console.log(e.target.getAttribute('data-id'));
+        const cursoEliminarID=e.target.getAttribute('data-id');
+        //eliminar del carrito//fileter recorre el array y filtra dependiendo de una condicion
+        articuloCarrito=articuloCarrito.filter(curso=>curso.id!==cursoEliminarID);//traera todo lo que sea diferente, ese decir borrar el id que le mandemos
+        
+        carritoHTML(articuloCarrito);//volvemos a pintar el carrito
+    }
+}
+
+
 function vaciarCarrito(){
     console.log(`Vaciando`);
 }
@@ -47,7 +67,27 @@ function leerDatosDelCuros(curso){
         cantidad:1
     }
 
-    articuloCarrito=[...articuloCarrito, infoCurso];//agregamos el curso al array para mostrar en el carrito
+    const existe=articuloCarrito.some(curso=>curso.id===infoCurso.id);//recorre el array y compara el id con el id que le estamos pasando
+    //si existe dara true, caso contrario falase
+    if(existe){
+        //actualizar cantidad
+        const curso=articuloCarrito.map(curso=>{
+            if(curso.id===infoCurso.id){
+                curso.cantidad++;
+                return curso;//retorna el carrito actualizado
+            }else{
+                return curso; //retorna el carrito sin actualizar datos
+            }
+            //siempre debe retornar con map
+        });
+
+        articuloCarrito=[...curso];
+
+    }else{
+        //agregar al carrito de forma normal
+        articuloCarrito=[...articuloCarrito, infoCurso];//agregamos el curso al array para mostrar en el carrito
+    }
+
     // console.log(articuloCarrito)
     carritoHTML(articuloCarrito);
 }
@@ -60,11 +100,17 @@ function carritoHTML(articuloCarrito){
     limpiarHTML();
 
     articuloCarrito.forEach((curso) => {
+        //extraemos los atributos
+        const {imagen, titulo, precio, cantidad, id}=curso;
+
+        //creamos el html a pintar en la web
         const fila=document.createElement('tr');
         fila.innerHTML=`
-        <td>
-        ${curso.titulo}
-        </td>
+        <td><img src="${imagen}" width="100"></td>
+        <td>${titulo}</td>
+        <td>${precio}</td>
+        <td>${cantidad}</td>
+        <td><a href="#" class="borrar-curso" data-id="${curso.id}">X</a></td>
         `;
 
         contenedorCarrito.appendChild(fila);
@@ -72,5 +118,9 @@ function carritoHTML(articuloCarrito){
 }
 
 function limpiarHTML(){
-
+    //mientras el contenedor carrito tenga un elemento hijo lo va a eliminar
+    //de esa forma eliman todo el contenido antes de crearlo con nuestra funcion carritoHTML()
+    while(contenedorCarrito.firstChild){
+        contenedorCarrito.removeChild(contenedorCarrito.firstChild);
+    }
 }
